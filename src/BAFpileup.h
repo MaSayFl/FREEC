@@ -15,7 +15,7 @@ class BAFpileup
             std::string outputDir,std::string makepileup, std::string const& mateFileName,
             std::string const& inputFormat, std::string const& matesOrientation,
             std::string pathToSamtools, std::string chrLen, std::string controlName,
-            std::string pathToSambamba, std::string SambambaThreads, std::string targetBed = "",
+            std::string pathToSambamba, std::string SambambaThreads, std::string pileupDepth, std::string targetBed = "",
             std::string pathToBedtools = "", std::string fastaFile="", int minQualPerPos=0);
         float calculateFlankLength(std::string const& mateFileName ,std::string const& inputFormat, std::string const& matesOrientation, std::string pathToSamtools,std::string pathToSambamba, std::string SambambaThreads);
         void calculateNewBoundaries(std::string targetBed, int flanks, std::string bedFileWithRegionsOfInterest);

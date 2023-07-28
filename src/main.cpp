@@ -253,6 +253,7 @@ int main(int argc, char *argv[])
 
     string pathToSambamba = (std::string)cf.Value("general","sambamba","");
     string SambambaThreads = "";
+    string pileupDepth = (std::string)cf.Value("general", "pileupDepth", "");
 
     SambambaThreads = (std::string)cf.Value("general","maxThreads",""); /* initialize SambambaThreads using maxThreads -- calkan */
 

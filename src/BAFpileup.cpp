@@ -30,8 +30,8 @@ BAFpileup::BAFpileup()
 
 void BAFpileup::makepileup(GenomeCopyNumber & sampleCopyNumber, GenomeCopyNumber & controlCopyNumber,
         std::string sample_MateFile, std::string control_Matefile, std::string outputDir, std::string makeminipileup,
-        std::string const& mateFileName ,std::string const& inputFormat, std::string const& matesOrientation,
-        std::string pathToSamtools, std::string pathToSambamba, std::string SambambaThreads, std::string chrLenFileName, std::string controlName, std::string targetBed,  std::string pathToBedtools,
+        std::string const& mateFileName, std::string const& inputFormat, std::string const& matesOrientation,
+        std::string pathToSamtools, std::string pathToSambamba, std::string SambambaThreads, std::string pileupDepth, std::string chrLenFileName, std::string controlName, std::string targetBed,  std::string pathToBedtools,
         std::string fastaFile, int minQualPerPos)
 {
     //create a .bed file with regions of interest to create a minipileup: targeted + flanks for WES or all chromosomes for WGS:
@@ -39,7 +39,7 @@ void BAFpileup::makepileup(GenomeCopyNumber & sampleCopyNumber, GenomeCopyNumber
 
     if (targetBed != "")
         {
-        int flanks = calculateFlankLength(mateFileName, inputFormat, matesOrientation, pathToSamtools, pathToSambamba, SambambaThreads);
+        int flanks = calculateFlankLength(mateFileName, inputFormat, matesOrientation, pathToSamtools, pathToSambamba, SambambaThreads, pileupDepth);
         calculateNewBoundaries(targetBed, flanks, bedFileWithRegionsOfInterest);
         }
     else
@@ -48,12 +48,12 @@ void BAFpileup::makepileup(GenomeCopyNumber & sampleCopyNumber, GenomeCopyNumber
         }
     pathToBedtools_=pathToBedtools; // /*
     string intersected = intersectWithBedtools(makeminipileup, outputDir, bedFileWithRegionsOfInterest, chrLenFileName);
-    string sampleOutFileName = createPileUpFile( outputDir, pathToSamtools , pathToSambamba, SambambaThreads, sample_MateFile, intersected, fastaFile,minQualPerPos);
+    string sampleOutFileName = createPileUpFile( outputDir, pathToSamtools , pathToSambamba, SambambaThreads, pileupDepth, sample_MateFile, intersected, fastaFile,minQualPerPos);
 
     //BAFtumor = computeBAF(sampleCopyNumber, _sample, outputDir, "_sample");
 
     if (controlName.compare("")!=0) {
-        string controlOutFileName = createPileUpFile( controlName, pathToSamtools, pathToSambamba, SambambaThreads, control_Matefile, intersected, fastaFile,minQualPerPos);
+        string controlOutFileName = createPileUpFile( controlName, pathToSamtools, pathToSambamba, SambambaThreads, pileupDepth, control_Matefile, intersected, fastaFile,minQualPerPos);
     }
     //computeBAF(controlCopyNumber, _control, outputDir, "_control");
     remove(intersected.c_str()); // */
@@ -91,7 +91,7 @@ float BAFpileup::calculateFlankLength(std::string const& mateFileName, std::stri
                 if (pathToSambamba != "")     {
                      command = pathToSambamba + " view -t " + SambambaThreads + " " + mateFileName;
                 }    else    {
-                     command = pathToSamtools_ + " view "+mateFileName;
+                     command = pathToSamtools_ + " view " + mateFileName;
                 }
             }
             if (mateFileName.substr(mateFileName.size()-3,3).compare(".gz")==0) {
@@ -291,17 +291,17 @@ std::string BAFpileup::intersectWithBedtools(std::string makeminipileup, std::st
     return intersectedBed;
 }
 
-std::string BAFpileup::createPileUpFile(std::string outputDir, std::string samtools_path, std::string pathToSambamba,std::string SambambaThreads , std::string control_MateFile, std::string intersected, std::string fastaFile, int minQualPerPos)
+std::string BAFpileup::createPileUpFile(std::string outputDir, std::string samtools_path, std::string pathToSambamba, std::string SambambaThreads, std::string pileupDepth, std::string control_MateFile, std::string intersected, std::string fastaFile, int minQualPerPos)
 {
     string minipileup = outputDir + "_minipileup" +".pileup";
     FILE *stream;
 
     string command;
     if (pathToSambamba != "")    {
-        string samtools_arg = "--samtools -f " +fastaFile+ " -d 200 -Q "+int2string(minQualPerPos)+ " -l " + intersected;
+        string samtools_arg = "--samtools -f " + fastaFile + " -d " + pileupDepth + " -Q " + int2string(minQualPerPos) + " -l " + intersected;
         command  = pathToSambamba + " mpileup -t " + SambambaThreads + " -o " + minipileup + " " + control_MateFile + " " + samtools_arg ;
     }  else   {
-         command = samtools_path + " mpileup -f "+fastaFile+" -d 200 -Q "+int2string(minQualPerPos)+" -q 1 -l " + intersected + " " + control_MateFile + " > " + minipileup; //discard reads wit 0 mapping quality
+         command = samtools_path + " mpileup -f " +fastaFile+ " -d " + pileupDepth +  " -Q " + int2string(minQualPerPos)+ " -q 1 -l " + intersected + " " + control_MateFile + " > " + minipileup; //discard reads wit 0 mapping quality
     }
 
     stream =
