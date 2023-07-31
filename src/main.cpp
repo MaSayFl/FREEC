@@ -251,7 +251,7 @@ int main(int argc, char *argv[])
     string pathToSamtools = (std::string)cf.Value("general","samtools","samtools");
     string pathToBedtools = (std::string)cf.Value("general","bedtools","bedtools");
 
-    string pathToSambamba = (std::string)cf.Value("general","sambamba","");
+    string pathToSambamba = (std::string)cf.Value("general","sambamba","4000");
     string SambambaThreads = "";
     string pileupDepth = (std::string)cf.Value("general", "pileupDepth", "");
 
@@ -833,7 +833,7 @@ int main(int argc, char *argv[])
             if (!isHasMiniPileUPsample || (isControlIsPresent && !isHasMiniPileUPcontrol)) {
                 cout << "Creating Pileup file to compute BAF profile...\n";
                 minipileup.makepileup(sampleCopyNumber, controlCopyNumber, sample_MateFile, control_MateFile, myName, makePileup, sample_MateFile,
-                sample_inputFormat, sample_mateOrientation, pathToSamtools, pathToSambamba, SambambaThreads, chrLenFile, controlName, targetBed, pathToBedtools, fastaFile, minimalQualityPerPosition);
+                sample_inputFormat, sample_mateOrientation, pathToSamtools, pathToSambamba, SambambaThreads, pileupDepth, chrLenFile, controlName, targetBed, pathToBedtools, fastaFile, minimalQualityPerPosition);
                 cout << "... -> Done!\n";
             }
 

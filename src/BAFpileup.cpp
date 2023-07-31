@@ -39,7 +39,7 @@ void BAFpileup::makepileup(GenomeCopyNumber & sampleCopyNumber, GenomeCopyNumber
 
     if (targetBed != "")
         {
-        int flanks = calculateFlankLength(mateFileName, inputFormat, matesOrientation, pathToSamtools, pathToSambamba, SambambaThreads, pileupDepth);
+        int flanks = calculateFlankLength(mateFileName, inputFormat, matesOrientation, pathToSamtools, pathToSambamba, SambambaThreads);
         calculateNewBoundaries(targetBed, flanks, bedFileWithRegionsOfInterest);
         }
     else
@@ -48,12 +48,12 @@ void BAFpileup::makepileup(GenomeCopyNumber & sampleCopyNumber, GenomeCopyNumber
         }
     pathToBedtools_=pathToBedtools; // /*
     string intersected = intersectWithBedtools(makeminipileup, outputDir, bedFileWithRegionsOfInterest, chrLenFileName);
-    string sampleOutFileName = createPileUpFile( outputDir, pathToSamtools , pathToSambamba, SambambaThreads, pileupDepth, sample_MateFile, intersected, fastaFile,minQualPerPos);
+    string sampleOutFileName = createPileUpFile( outputDir, pathToSamtools , pathToSambamba, SambambaThreads, pileupDepth, sample_MateFile, intersected, fastaFile, minQualPerPos);
 
     //BAFtumor = computeBAF(sampleCopyNumber, _sample, outputDir, "_sample");
 
     if (controlName.compare("")!=0) {
-        string controlOutFileName = createPileUpFile( controlName, pathToSamtools, pathToSambamba, SambambaThreads, pileupDepth, control_Matefile, intersected, fastaFile,minQualPerPos);
+        string controlOutFileName = createPileUpFile( controlName, pathToSamtools, pathToSambamba, SambambaThreads, pileupDepth, control_Matefile, intersected, fastaFile, minQualPerPos);
     }
     //computeBAF(controlCopyNumber, _control, outputDir, "_control");
     remove(intersected.c_str()); // */
@@ -291,7 +291,7 @@ std::string BAFpileup::intersectWithBedtools(std::string makeminipileup, std::st
     return intersectedBed;
 }
 
-std::string BAFpileup::createPileUpFile(std::string outputDir, std::string samtools_path, std::string pathToSambamba, std::string SambambaThreads, std::string pileupDepth, std::string control_MateFile, std::string intersected, std::string fastaFile, int minQualPerPos)
+std::string BAFpileup::createPileUpFile(std::string outputDir, std::string samtools_path, std::string pathToSambamba, std::string SambambaThreads, std::string control_MateFile, std::string intersected,  std::string pileupDepth, std::string fastaFile, int minQualPerPos)
 {
     string minipileup = outputDir + "_minipileup" +".pileup";
     FILE *stream;
