@@ -252,6 +252,7 @@ int main(int argc, char *argv[])
     string pathToBedtools = (std::string)cf.Value("general","bedtools","bedtools");
 
     string pathToSambamba = (std::string)cf.Value("general","sambamba","");
+    string pileupDepth = (std::string)cf.Value("general", "pileupDepth", "");
     string SambambaThreads = "";
 
     SambambaThreads = (std::string)cf.Value("general","maxThreads",""); /* initialize SambambaThreads using maxThreads -- calkan */
@@ -832,7 +833,7 @@ int main(int argc, char *argv[])
             if (!isHasMiniPileUPsample || (isControlIsPresent && !isHasMiniPileUPcontrol)) {
                 cout << "Creating Pileup file to compute BAF profile...\n";
                 minipileup.makepileup(sampleCopyNumber, controlCopyNumber, sample_MateFile, control_MateFile, myName, makePileup, sample_MateFile,
-                sample_inputFormat, sample_mateOrientation, pathToSamtools, pathToSambamba, SambambaThreads, chrLenFile, controlName, targetBed, pathToBedtools, fastaFile, minimalQualityPerPosition);
+                sample_inputFormat, sample_mateOrientation, pathToSamtools, pathToSambamba, SambambaThreads, chrLenFile, controlName, targetBed, pathToBedtools, fastaFile, minimalQualityPerPosition, pileupDepth);
                 cout << "... -> Done!\n";
             }
 
