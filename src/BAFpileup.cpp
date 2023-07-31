@@ -298,10 +298,10 @@ std::string BAFpileup::createPileUpFile(std::string outputDir, std::string samto
 
     string command;
     if (pathToSambamba != "")    {
-        string samtools_arg = "--samtools -f " +fastaFile+ " -d 200 -Q "+int2string(minQualPerPos)+ " -l " + intersected;
+        string samtools_arg = "--samtools -f " +fastaFile+ " -d " + pileupDepth+ " -Q "+int2string(minQualPerPos)+ " -l " + intersected;
         command  = pathToSambamba + " mpileup -t " + SambambaThreads + " -o " + minipileup + " " + control_MateFile + " " + samtools_arg ;
     }  else   {
-         command = samtools_path + " mpileup -f "+fastaFile+" -d 200 -Q "+int2string(minQualPerPos)+" -q 1 -l " + intersected + " " + control_MateFile + " > " + minipileup; //discard reads wit 0 mapping quality
+         command = samtools_path + " mpileup -f "+fastaFile+" -d " + pileupDepth+ " -Q "+int2string(minQualPerPos)+" -q 1 -l " + intersected + " " + control_MateFile + " > " + minipileup; //discard reads wit 0 mapping quality
     }
 
     stream =
